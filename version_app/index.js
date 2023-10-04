@@ -17,7 +17,9 @@ mongoose.connection.on("error", (err) => {
     console.log(err);
 });
 
+app.use(express.json())
 app.use(cors());
+
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
@@ -28,6 +30,23 @@ app.get('/todos', async (req, res) => {
         res.json(todos);
     } catch (error) {
         res.status(500).send(error.toString());
+    }
+})
+
+app.post('/todos/check/:_id', async (req, res) => {
+    checked = req.body?.checked
+    console.log("body: ", req.body, " params: ", req.params)
+    if (checked == 'undefined') {
+        return res.status(422).send("wrong parameter were given");
+    }
+    try {
+        const filter = { _id: req.params._id }
+        const update = { checked };
+        const todo = await models.TodoModel.findOneAndUpdate(filter, update, { new: true })
+        res.json(todo);
+    } catch (error) {
+        res.status(422).send("wrong parameter were given");
+        console.log(error)
     }
 })
 

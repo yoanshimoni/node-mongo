@@ -47,3 +47,23 @@
   color: #888;
   margin-top: 20px;
 }
+
+.check-icon {
+  font-size: 24px;
+  margin-left: 10px;
+  cursor: pointer;
+  display: inline-block;
+  transition: transform 0.3s;
+}
+
+.checked {
+  color: red;
+}
+
+.unchecked {
+  color: green;
+}
+
+.check-icon:hover {
+  transform: scale(1.2);
+}

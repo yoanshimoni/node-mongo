@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
+import axios from 'axios';
 import './App.css';
 
+const versionUrl = axios.create({
+  baseURL: `http://localhost:8000`,
+});
 
 function App() {
   const [todos, setTodos] = useState([])
@@ -8,11 +12,10 @@ function App() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("http://localhost:8000/todos");
-        let todos = await res.json();
-        todos.forEach(todo => {
-          todo.isChecked = false
-        })
+        console.log("fetch...")
+        const res = await versionUrl.get("/todos");
+        console.log("res: ", res)
+        let todos = await res.data;
         console.log(todos)
         setTodos(todos)
       } catch (error) {
@@ -22,9 +25,17 @@ function App() {
     fetchData()
   }, [])
 
-  const handleClick = id => e => {
+  const handleClick = (id, checked) => async e => {
     console.log("clicked", id)
-    setTodos(todos => todos.map(elem => elem._id == id ? { ...elem, isChecked: !elem.isChecked } : elem))
+    try {
+      const response = await versionUrl.post(`/todos/check/${id}`, { checked })
+      const newTodo = await response.data;
+      console.log(newTodo);
+      setTodos(todos => todos.map(elem => elem._id === id ? { ...elem, checked: checked } : elem))
+      console.log(todos)
+    } catch (e) {
+      console.error('Error during the fetch operation', e);
+    }
   }
 
   return (
@@ -38,10 +49,12 @@ function App() {
             {todos.map(todo => (
               <li
                 key={todo._id}
-                onClick={handleClick(todo._id)}
-                className={`todo-item ${todo.isChecked ? "checked" : ""}`}
+                onClick={handleClick(todo._id, !todo.checked)}
+                className={`todo-item ${todo.checked ? "checked" : ""}`}
               >
-                {todo.title} - {todo.created_at}
+                <span style={{ color: todo.checked ? "red" : "green" }}>{todo.title}</span>
+                {todo.checked ? <span className="check-icon checked">X</span> :
+                  <span className="check-icon unchecked">✓</span>}
               </li>
             ))}
           </ul>

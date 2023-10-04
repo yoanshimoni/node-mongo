@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const todoSchema = new mongoose.Schema({
-    _id: {
+    version_id: {
         type: Number,
         required: true
     },
@@ -15,6 +15,11 @@ const todoSchema = new mongoose.Schema({
         type: Date,
         required: true,
         default: Date.now
+    },
+    checked: {
+        type: Boolean,
+        required: true,
+        default: false
     }
 });
 
