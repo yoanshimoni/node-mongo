@@ -1,0 +1,42 @@
+services:
+  mongodb:
+   image: mongo:7-jammy
+   volumes:
+    - dbdata6:/data/db
+   networks:
+    - my_custom_network
+
+  
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    networks:
+      - my_custom_network
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: ''
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/
+    depends_on:
+      - mongodb
+
+  my-app:
+    build:
+      context: ./version_app
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8000:8000
+    networks:
+      - my_custom_network
+    environment:
+      MONGODB_URL: mongodb://mongodb:27017/local
+      PORT: 8000
+    depends_on:
+      - mongodb
+
+networks:
+  my_custom_network:
+   driver: bridge
+volumes:
+  dbdata6:
