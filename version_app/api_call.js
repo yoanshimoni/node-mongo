@@ -13,7 +13,7 @@ const getVersions = async () => {
     for ({ id, title, completed } of todosSliced) {
         try {
             // Option 1
-            const filter = { _id: id };
+            const filter = { version_id: id };
             const update = { title, completed };
             const options = { upsert: true, setDefaultsOnInsert: true };
             await models.TodoModel.findOneAndUpdate(filter, update, options);
