@@ -16,6 +16,7 @@ mongoose.connection.on("connected", () => {
 mongoose.connection.on("error", (err) => {
     console.log(err);
 });
+mongoose.set('debug', true)
 
 app.use(express.json())
 app.use(cors());
